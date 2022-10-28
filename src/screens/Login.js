@@ -4,10 +4,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LoginUser } from "../redux/Actions/userActions";
+import { clearErrors, LoginUser } from "../redux/Actions/userActions";
 import { handleValidEmail } from "../utils/helpers";
 
 const Login = ({ navigation }) => {
@@ -17,11 +18,14 @@ const Login = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const { loading, isAuthenticated } = useSelector((state) => state.user);
+  const { loading, isAuthenticated, error } = useSelector(
+    (state) => state.user
+  );
 
   const handleLogin = () => {
-    if (!email || !password) return alert("Please fill both fields");
-    if (emailValidError) return alert(emailValidError);
+    if (!email || !password)
+      return Alert.alert("Login Fail", "Please fill both fields");
+    if (emailValidError) return Alert.alert("Login Fail", emailValidError);
     dispatch(LoginUser({ email, password }));
   };
 
@@ -29,7 +33,11 @@ const Login = ({ navigation }) => {
     if (isAuthenticated) {
       navigation.navigate("Home");
     }
-  }, [isAuthenticated, navigation]);
+    if (error) {
+      Alert.alert("Login Fail", error);
+      dispatch(clearErrors());
+    }
+  }, [isAuthenticated, navigation, error]);
 
   return (
     <View style={styles.container}>
@@ -61,7 +69,7 @@ const Login = ({ navigation }) => {
         <TouchableOpacity
           style={styles.button}
           onPress={handleLogin}
-          disabled={loading}
+          disabled={loading ? true : false}
         >
           <Text style={{ fontSize: 20, color: "#fff" }}>Login</Text>
         </TouchableOpacity>

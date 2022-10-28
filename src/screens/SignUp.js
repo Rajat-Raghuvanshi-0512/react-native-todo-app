@@ -9,29 +9,40 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { handleValidEmail } from "../utils/helpers";
+import { clearErrors, RegisterUser } from "../redux/Actions/userActions";
 
 const SignUp = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailValidError, setEmailValidError] = useState("");
   const [password, setPassword] = useState("");
+  const [cpassword, setCpassword] = useState("");
 
   const dispatch = useDispatch();
 
-  const { loading, isAuthenticated } = useSelector((state) => state.user);
+  const { loading, isAuthenticated, error } = useSelector(
+    (state) => state.user
+  );
 
   const handleRegister = () => {
-    if (!email || !password || !name)
+    if (!email || !password || !name || !cpassword)
       return alert("Please fill all the fields");
     if (emailValidError) return alert(emailValidError);
-    dispatch(LoginUser({ email, password }));
+    if (password !== cpassword) {
+      return alert("Passwords doesnot match");
+    }
+    dispatch(RegisterUser({ name, email, password, cpassword }));
   };
 
   useEffect(() => {
     if (isAuthenticated) {
       navigation.navigate("Home");
     }
-  }, [isAuthenticated, navigation]);
+    if (error) {
+      alert(error);
+      dispatch(clearErrors());
+    }
+  }, [isAuthenticated, navigation, error]);
 
   return (
     <ScrollView style={styles.container}>
@@ -75,7 +86,7 @@ const SignUp = ({ navigation }) => {
           style={styles.input}
           placeholder="Confirm your password"
           onChangeText={(value) => {
-            setPassword(value);
+            setCpassword(value);
           }}
         />
         <TouchableOpacity
