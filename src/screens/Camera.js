@@ -15,12 +15,12 @@ const CameraComponent = ({ navigation }) => {
       aspect: [1, 1],
       quality: 1,
     });
-    return navigation.navigate("Profile", { image: data.uri });
+    return navigation.navigate("UpdateProfile", { image: data.uri });
   };
 
   const clickPicture = async () => {
     const data = await camera.takePictureAsync();
-    return navigation.navigate("Profile", { image: data.uri });
+    return navigation.navigate("UpdateProfile", { image: data.uri });
   };
 
   const toggleCameraType = () => {

@@ -5,14 +5,24 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { Avatar } from "react-native-paper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
+import { loadUser, logout } from "../redux/Actions/userActions";
 
 const Profile = ({ navigation, route }) => {
   const [avatar, setAvatar] = useState("");
-  const { userInfo, loading } = useSelector((state) => state.user);
+  const { userInfo, loading, isUpdated, message } = useSelector(
+    (state) => state.user
+  );
+  const dispatch = useDispatch();
+
+  const logoutUser = async () => {
+    await dispatch(logout());
+    dispatch(loadUser());
+  };
 
   useEffect(() => {
     setAvatar(userInfo?.profilePhoto?.url || "");
@@ -22,7 +32,15 @@ const Profile = ({ navigation, route }) => {
     if (route?.params?.image) {
       setAvatar(route.params.image);
     }
-  }, [route?.params]);
+    if (isUpdated) {
+      dispatch({ type: "UPDATE_PROFILE_RESET" });
+      dispatch(loadUser());
+    }
+    if (message) {
+      Alert.alert("Success", message);
+      dispatch({ type: "CLEAR_MESSAGE" });
+    }
+  }, [route?.params, isUpdated, message]);
 
   if (loading) return <Loader />;
 
@@ -39,12 +57,14 @@ const Profile = ({ navigation, route }) => {
           style={styles.subheading}
           placeholder="Name"
           value={userInfo.name}
+          editable={false}
         />
         <Text style={styles.heading}>Email</Text>
         <TextInput
           style={styles.subheading}
           placeholder="Name"
           value={userInfo.email}
+          editable={false}
         />
       </View>
       <View>
@@ -62,7 +82,7 @@ const Profile = ({ navigation, route }) => {
             <Text style={styles.otherText}>Change Password</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={logoutUser}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
@@ -74,9 +94,6 @@ export default Profile;
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center" },
-  camera: {
-    flex: 1,
-  },
   buttonContainer: {
     position: "absolute",
     bottom: 20,

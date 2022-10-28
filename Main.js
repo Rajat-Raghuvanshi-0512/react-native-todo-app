@@ -12,19 +12,17 @@ import { loadUser } from "./src/redux/Actions/userActions";
 import Camera from "./src/screens/Camera";
 import UpdateProfile from "./src/screens/UpdateProfile";
 import ChangePass from "./src/screens/ChangePass";
-import ForgotPass from "./src/screens/ForgotPass";
 
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user);
+  const { isAuthenticated, userloading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loadUser());
   }, []);
-
-  if (loading) {
+  if (userloading) {
     return <Loader />;
   }
   return (
@@ -67,11 +65,6 @@ const Main = () => {
               name="ChangePass"
               component={ChangePass}
               options={{ title: "Change Password" }}
-            />
-            <Stack.Screen
-              name="ForgotPass"
-              component={ForgotPass}
-              options={{ title: "Forgot Password" }}
             />
           </>
         ) : (

@@ -18,13 +18,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import CustomDialog from "../components/CustomDialog";
+import { loadUser } from "../redux/Actions/userActions";
 
 const Home = () => {
   const [editTodoVisible, setEditTodoVisible] = useState(false);
   const [addTodoVisible, setaddTodoVisible] = useState(false);
   const [todoData, settodoData] = useState({ id: "", title: "", desc: "" });
   const dispatch = useDispatch();
-  const { mynotes, loading, isUpdated, isDeleted, error, msg } = useSelector(
+  const { mynotes, loading, isUpdated, isDeleted, error } = useSelector(
     (state) => state.notes
   );
 
@@ -73,15 +74,29 @@ const Home = () => {
         <Loader />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
-          {mynotes?.map((item) => (
-            <Todo
-              key={item._id}
-              id={item._id}
-              title={item.title}
-              desc={item.desc}
-              showDialog={showDialog}
-            />
-          ))}
+          {mynotes.length > 0 ? (
+            mynotes.map((item) => (
+              <Todo
+                key={item._id}
+                id={item._id}
+                title={item.title}
+                desc={item.desc}
+                showDialog={showDialog}
+              />
+            ))
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ marginTop: 50, fontWeight: "200", fontSize: 20 }}>
+                Click on add button to add a note
+              </Text>
+            </View>
+          )}
         </ScrollView>
       )}
       <CustomDialog

@@ -83,16 +83,6 @@ const Login = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}
-        >
-          <Text>Forgot password? </Text>
-          <TouchableOpacity>
-            <Text style={{ textDecorationLine: "underline", color: "#0000ff" }}>
-              Reset Password
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );

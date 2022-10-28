@@ -19,7 +19,6 @@ export const fetchNotes = () => async (dispatch) => {
       type: "GET_ALL_NOTES_FAIL",
       payload: error?.response?.data?.error,
     });
-    console.log(error?.response?.data?.error);
   }
 };
 
@@ -45,9 +44,8 @@ export const addNotes = (title, desc) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "ADD_NOTE_FAIL",
-      payload: error?.response?.data?.error,
+      payload: error?.response?.data?.errors[0].msg,
     });
-    console.log(error?.response?.data?.errors[0].msg);
   }
 };
 
@@ -69,7 +67,6 @@ export const deleteNote = (id) => async (dispatch) => {
       type: "DELETE_NOTE_FAIL",
       payload: error?.response?.data?.error,
     });
-    console.log(error?.response?.data?.error);
   }
 };
 
@@ -92,7 +89,6 @@ export const editNote = (id, title, desc) => async (dispatch) => {
       type: "EDIT_NOTE_FAIL",
       payload: error?.response?.data?.error,
     });
-    console.log(error?.response?.data?.error);
   }
 };
 
@@ -101,7 +97,5 @@ export const clearErrors = () => async (dispatch) => {
     dispatch({
       type: "CLEAR_ERRORS",
     });
-  } catch (error) {
-    console.log(error.response.data.error);
-  }
+  } catch (error) {}
 };
